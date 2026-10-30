@@ -1,0 +1,23 @@
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  CheckFileName:
+    runs-on: ubuntu-latest
+    steps:
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+      - name: Check file name
+        run: |
+          for file in ${{ steps.files.outputs.added }}; do
+            if [[ $file == *.docx ]]
+            then
+              [[ $file =~ ^Templates\/[a-zA-Z]+\/[a-zA-Z]{2}-[a-zA-Z]{3}-(ASS|ACK|ARG|APP|ADO|SUM|CON|DEC|EML|LET|MEM|GOR|GRP|GRS|HNO|HRN|STD|SOR|SOT|EGW|WAL|SCO|CLM|GAP|GNO)-(ENG|WEL)-.+\.docx$ ]] || exit 1
+            fi
+          done
